@@ -44,10 +44,10 @@ alphanum {lettre}|{chiffre}
 "ecrire"                                        {return ECRIRE;}
 "$"({alphanum}|_)+                              {return ID_VAR;}
 ({lettre}|"_")({alphanum}|"_")*                 {return ID_FCT;}
-"," {return VIRGULE;}
+","                                             {return VIRGULE;}
 
-[ \t] ; /* ignore les blancs et tabulations */
-\n     return 0;
+[ \t\n] ; /* ignore les blancs, tabulations et retour à la ligne */
+#.* ; //on ignore les commentaires
 <<EOF>>              { return FIN;                 }  /* Fin de fichier */
 
 %%
