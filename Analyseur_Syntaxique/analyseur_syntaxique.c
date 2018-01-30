@@ -1,15 +1,11 @@
 #include "analyseur_syntaxique.h"
 
 void E() {
-    printf("<E>");
     T();
     EPrime();
-    printf("</E>");
-    
 }
 
 void EPrime() {
-    printf("<EPrime>");
     if(uniteCourante == PLUS) {
         uniteCourante = yylex();
         E();
@@ -17,18 +13,14 @@ void EPrime() {
     else {
         return;
     }
-    printf("</EPrime>");
 }
 
 void T() {
-    printf("<T>");
     F();
     TPrime();
-    printf("</T>");
 }
 
 void TPrime() {
-    printf("<TPrime>");
     if(uniteCourante == FOIS) {
         uniteCourante = yylex();
         T();
@@ -36,11 +28,9 @@ void TPrime() {
     else {
         return;
     }
-    printf("</TPrime>");
 }
 
 void F() {
-    printf("<T>");
     if(uniteCourante == PARENTHESE_OUVRANTE) {
         uniteCourante = yylex();
         E();
@@ -61,5 +51,4 @@ void F() {
         printf("Erreur de syntaxe\n");
         exit(-1);
     }
-    printf("</T>");
 }

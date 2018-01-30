@@ -1,31 +1,37 @@
 CC = gcc
+CCFLAGS = -Wall -ggdb
+LIBS = -lm
+
 FLEX = flex
 
-LIBS = -lm 
-CCFLAGS = -Wall -ggdb
+LexDir = Analyseur_Lexical
+SynDir = Analyseur_Syntaxique
+UtiDir = util
 
-OBJ = ./Analyseur_Lexical/analyseur_lexical_flex.o ./Analyseur_Syntaxique/analyseur_syntaxique.o ./util/util.o
+OBJ = $(LexDir)/analyseur_lexical_flex.o\
+      $(SynDir)/analyseur_syntaxique.o\
+      $(UtiDir)/util.o\
 
 all: compilateur
 
 compilateur: compilateur.c $(OBJ)
-	$(CC) $(CCFLAGS) -o compilateur compilateur.c $(OBJ)
+	$(CC) $(CCFLAGS) -o $@ $^ $(LIBS)
 
-./Analyseur_Lexical/analyseur_lexical_flex.c: ./Analyseur_Lexical/analyseur_lexical.flex
+$(LexDir)/analyseur_lexical_flex.c: $(LexDir)/analyseur_lexical.flex
 	$(FLEX) -o $@ $^
 
-./Analyseur_Lexical/analyseur_lexical_flex.o: ./Analyseur_Lexical/analyseur_lexical_flex.c
+$(LexDir)/analyseur_lexical_flex.o: $(LexDir)/analyseur_lexical_flex.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
     
-./Analyseur_Syntaxique/analyseur_syntaxique.o: ./Analyseur_Syntaxique/analyseur_syntaxique.c
+$(SynDir)/analyseur_syntaxique.o: $(SynDir)/analyseur_syntaxique.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
-./util/util.o: ./util/util.c
+$(UtiDir)/util.o: $(UtiDir)/util.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
 .PHONY : clean
 
 clean:
-	- rm -f $(OBJ)
-	- rm -f compilateur
-	- rm -f ./Analyseur_Lexical/analyseur_lexical_flex.c
+	rm -f $(OBJ)
+	rm -f compilateur
+	rm -f $(LexDir)/analyseur_lexical_flex.c

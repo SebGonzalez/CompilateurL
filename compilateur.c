@@ -1,8 +1,8 @@
 #include "./Analyseur_Syntaxique/analyseur_syntaxique.h"
 
 int main(int argc, char **argv) {  
-  char nom[100];
-  char valeur[100];  
+  //char nom[100];
+  //char valeur[100];  
   
   yyin = fopen(argv[1], "r");
   if(yyin == NULL){

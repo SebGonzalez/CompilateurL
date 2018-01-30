@@ -1,0 +1,6 @@
+compilateur
+*.o
+Analyseur_Lexical/*.o
+Analyseur_Lexical/analyseur_lexical_flex.c
+Analyseur_Syntaxique/*.o
+util/*.o
