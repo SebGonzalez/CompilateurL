@@ -12,7 +12,7 @@ compilateur: compilateur.c $(OBJ)
 	$(CC) $(CCFLAGS) -o compilateur compilateur.c $(OBJ)
 
 ./Analyseur_Lexical/analyseur_lexical_flex.c: ./Analyseur_Lexical/analyseur_lexical.flex
-	$(FLEX) -o $@ $^ -o $@
+	$(FLEX) -o $@ $^
 
 ./Analyseur_Lexical/analyseur_lexical_flex.o: ./Analyseur_Lexical/analyseur_lexical_flex.c
 	$(CC) $(CCFLAGS) -c $^ -o $@

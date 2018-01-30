@@ -3,7 +3,7 @@
  */
  
 %{
-#include "../util/symboles.h"
+#include "symboles.h"
 %}
 %option yylineno
 %option nounput

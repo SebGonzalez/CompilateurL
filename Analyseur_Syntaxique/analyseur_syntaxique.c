@@ -4,7 +4,7 @@ void E() {
     printf("<E>");
     T();
     EPrime();
-    printf("<\E>");
+    printf("</E>");
     
 }
 
@@ -17,14 +17,14 @@ void EPrime() {
     else {
         return;
     }
-    printf("<\EPrime>");
+    printf("</EPrime>");
 }
 
 void T() {
     printf("<T>");
     F();
     TPrime();
-    printf("<\T>");
+    printf("</T>");
 }
 
 void TPrime() {
@@ -36,7 +36,7 @@ void TPrime() {
     else {
         return;
     }
-    printf("<\TPrime>");
+    printf("</TPrime>");
 }
 
 void F() {
@@ -61,5 +61,5 @@ void F() {
         printf("Erreur de syntaxe\n");
         exit(-1);
     }
-    printf("<\T>");
+    printf("</T>");
 }
