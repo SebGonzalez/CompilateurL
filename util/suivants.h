@@ -2,6 +2,7 @@
 #define __SUIVANTS__
 
 #include "symboles.h"
+#include "stdio.h"
 
 int suivants[NB_NON_TERMINAUX+1][NB_TERMINAUX+1];
 

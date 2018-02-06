@@ -13,6 +13,8 @@ int main(int argc, char **argv) {
     uniteCourante = yylex();  
     //nom_token( uniteCourante, nom, valeur );
     //printf("%s\t%s\t%s\n", yytext, nom, valeur);
+      initialise_premiers();
+      initialise_suivants();
       programme();
   } while (uniteCourante != FIN);
   

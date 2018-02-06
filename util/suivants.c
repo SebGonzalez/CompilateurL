@@ -19,6 +19,8 @@ void initialise_suivants(void){
   suivants[_listeDecVariablesBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_declarationVariable_][VIRGULE] = 1;
   suivants[_optTailleTableau_][VIRGULE] = 1;
+  //Provisoire
+  suivants[_optTailleTableau_][POINT_VIRGULE] = 1;
   suivants[_listeDecFonctions_][FIN] = 1;
   suivants[_declarationFonction_][ID_FCT] = 1;
   suivants[_listeParam_][FIN] = 1;
@@ -161,5 +163,6 @@ void initialise_suivants(void){
 
 int est_suivant(int terminal, int non_terminal)
 {
+	printf("%d %d\n", terminal, non_terminal);
   return suivants[non_terminal][terminal];
 }

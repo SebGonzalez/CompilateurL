@@ -11,10 +11,10 @@ int consume(int x){
         //affiche_element(nom,valeur,trace_xml);
         uniteCourante = yylex();
         return 1;
-    }
-
-    nom_token(uniteCourante,nom2,valeur2);
-    fprintf(stderr,"%s expected %s found\n", nom, nom2);
+    }else{
+        nom_token(uniteCourante,nom2,valeur2);
+        fprintf(stderr,"%s expected %s found\n", valeur, valeur2);
+    }   
 
     return 0;
 }
