@@ -1,6 +1,6 @@
 #include "analyseur_syntaxique.h"
 
-void consume(int x){
+int consume(int x){
     char valeur[10];
     char valeur2[10];
     char nom[10];
@@ -8,73 +8,23 @@ void consume(int x){
     nom_token(x,nom,valeur);
 
     if(uniteCourante == x){
-        affiche_element(nom,valeur,trace_xml);
+        //affiche_element(nom,valeur,trace_xml);
         uniteCourante = yylex();
-    }else{
-        nom_token(uniteCourante,nom2,valeur2);
-        erreur()
-    }
-}
-
-void E() {
-    T();
-    EPrime();
-}
-
-void EPrime() {
-    if(uniteCourante == PLUS) {
-        uniteCourante = yylex();
-        E();
-    }
-    else {
-        return;
-    }
-}
-
-void T() {
-    F();
-    TPrime();
-}
-
-void TPrime() {
-    if(uniteCourante == FOIS) {
-        uniteCourante = yylex();
-        T();
-    }
-    else {
-        return;
-    }
-}
-
-void F() {
-    if(uniteCourante == PARENTHESE_OUVRANTE) {
-        uniteCourante = yylex();
-        E();
-        if(uniteCourante == PARENTHESE_FERMANTE) {
-            uniteCourante = yylex();
-        }
-        else {
-        printf("Erreur de syntaxe\n");
-        exit(-1);
-            
+        return 1;
     }
 
-    }
-    else if(uniteCourante == NOMBRE){
-        uniteCourante = yylex();
-    }
-    else {
-        printf("Erreur de syntaxe\n");
-        exit(-1);
-    }
+    nom_token(uniteCourante,nom2,valeur2);
+    fprintf(stderr,"%s expected %s found\n", nom, nom2);
+
+    return 0;
 }
+
+//Procedures
 
 void optDecVariables(){
     if(est_premier(uniteCourante,_listeDecVariables_)){
         listeDecVariables();
-        if(uniteCourante == POINT_VIRGULE){
-            uniteCourante == yylex();
-        }else{
+        if(!consume(POINT_VIRGULE)){
             erreur("optDecVariables ;");
         }
     }else if(est_suivant(uniteCourante,_optDecVariables_)){}
@@ -94,8 +44,7 @@ void listeDecFonctions(){
 }
 
 void declarationFonction(){
-    if(uniteCourante == ID_FCT){
-        uniteCourante == yylex();
+    if(consume(ID_FCT)){
         listeParam();
         optDecVariables();
         instructionBloc();
@@ -105,12 +54,9 @@ void declarationFonction(){
 }
 
 void listeParam(){
-    if(uniteCourante == PARENTHESE_OUVRANTE){
-        uniteCourante = yylex();
+    if(consume(PARENTHESE_OUVRANTE)){
         optListeDecVariables();
-        if(uniteCourante == PARENTHESE_FERMANTE){
-            uniteCourante = yylex();
-        }else{
+        if(!consume(PARENTHESE_FERMANTE)){
             erreur("listeParam");
         }
     }else{
@@ -153,12 +99,9 @@ void instruction(){
 void instructionAffect(){
     if(est_premier(uniteCourante,_var_)){
         var();
-        if(uniteCourante == EGAL){
-            uniteCourante = yylex();
+        if(consume(EGAL)){
             expression();
-            if(uniteCourante == POINT_VIRGULE){
-                uniteCourante == yylex();
-            }else{
+            if(!consume(POINT_VIRGULE)){
                 erreur("instructionAffect");
             }
         }else{
@@ -170,8 +113,300 @@ void instructionAffect(){
 }
 
 void instructionBloc(){
-    consume(ACCOLADE_OUVRANTE);
-    //TO DO
+    if(consume(ACCOLADE_OUVRANTE)){
+        listeInstructions();
+        if(!consume(ACCOLADE_FERMANTE)){
+            erreur("instructionBloc");
+        }
+    }else{
+        erreur("instructionBloc");
+    }
+}
+
+void listeInstructions(){
+    if(est_premier(uniteCourante,_instruction_)){
+        instruction();
+        listeInstructions();
+    }else if(est_suivant(uniteCourante,_listeInstructions_)){}
+    else{
+        erreur("listeInstructions");
+    }
+}
+
+void instructionSi(){
+    if(consume(SI)){
+        expression();
+        if(consume(ALORS)){
+            instructionBloc();
+            optSinon();
+        }else{
+            erreur("instructionSi");
+        }
+    }else{
+        erreur("instructionSi");
+    }
+}
+
+void optSinon(){
+    if(consume(SINON)){
+        instructionBloc();
+    }else if(est_suivant(uniteCourante,_optSinon_)){}
+    else{
+        erreur("optSinon");
+    }
+}
+
+void instructionTantque(){
+    if(consume(TANTQUE)){
+        expression();
+        if(consume(FAIRE)){
+            instructionBloc();
+        }else{
+            erreur("instructionTantque");
+        }
+    }else{
+        erreur("instructionTantque");
+    }
+}
+
+void instructionAppel(){
+    if(est_premier(uniteCourante,_appelFct_)){
+        appelFct();
+        if(!consume(POINT_VIRGULE)){
+            erreur("instructionAppel");
+        }
+    }else{
+        erreur("instructionAppel");
+    }
+}
+
+void instructionRetour(){
+    if(consume(RETOUR)){
+        expression();
+        if(!consume(POINT_VIRGULE)){
+            erreur("instructionRetour");
+        }
+    }else{
+        erreur("instructionRetour");
+    }
+}
+
+void instructionEcriture(){
+    if(consume(ECRIRE)){
+        if(consume(PARENTHESE_OUVRANTE)){
+            expression();
+            if(consume(PARENTHESE_FERMANTE)){
+                if(!consume(POINT_VIRGULE)){
+                    erreur("instructionEcriture");
+                }
+            }else{
+                erreur("instructionEcriture");
+            }
+        }else{
+            erreur("instructionEcriture");
+        }
+    }else{
+        erreur("instructionEcriture");
+    }
+}
+
+void instructionVide(){
+    if(!consume(POINT_VIRGULE)){
+        ERREUR();
+    }
+}
+
+void expression(){
+    if(est_premier(uniteCourante,_conjonction_)){
+        conjonction();
+        expressionBis();
+    }else{
+        ERREUR();
+    }
+}
+
+void expressionBis(){
+    if(consume(OU)){
+        conjonction();
+        expressionBis();
+    }else if(est_suivant(uniteCourante,_expressionBis_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void conjonction(){
+    if(est_premier(uniteCourante,_negation_)){
+        negation();
+        conjonctionBis();
+    }else{
+        ERREUR();
+    }
+}
+
+void conjonctionBis(){
+    if(consume(ET)){
+        negation();
+        conjonctionBis();
+    }else if(est_suivant(uniteCourante,_conjonctionBis_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void negation(){
+    if(consume(NON)){
+        comparaison();
+    }else if(est_premier(uniteCourante,_comparaison_)){
+        comparaison();
+    }else{
+        ERREUR();
+    }
+}
+
+void comparaison(){
+    if(est_premier(uniteCourante,_expArith_)){
+        expArith();
+        comparaisonBis();
+    }else{
+        ERREUR();
+    }
+}
+
+void comparaisonBis(){
+    if(consume(EGAL)){
+        expArith();
+        comparaisonBis();
+    }else if(consume(INFERIEUR)){
+        expArith();
+        comparaisonBis();
+    }else if(est_suivant(uniteCourante,_comparaisonBis_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void expArith(){
+    if(est_premier(uniteCourante,_terme_)){
+        terme();
+        expArithBis();
+    }else{
+        ERREUR();
+    }
+}
+
+void expArithBis(){
+    if(consume(PLUS)){
+        terme();
+        expArithBis();
+    }else if(consume(MOINS)){
+        terme();
+        expArithBis();
+    }else if(est_suivant(uniteCourante,_expArithBis_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void terme(){
+    if(est_premier(uniteCourante,_facteur_)){
+        facteur();
+        termeBis();
+    }else{
+        ERREUR();
+    }
+}
+
+void termeBis(){
+    if(consume(FOIS)){
+        facteur();
+        termeBis();
+    }else if(consume(DIVISE)){
+        facteur();
+        termeBis();
+    }else if(est_suivant(uniteCourante,_termeBis_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void facteur(){
+    if(consume(PARENTHESE_OUVRANTE)){
+        expression();
+        if(!consume(PARENTHESE_FERMANTE)){
+            ERREUR();
+        }
+    }else if(consume(NOMBRE)){}
+    else if(est_premier(uniteCourante,_appelFct_)){
+        appelFct();
+    }else if(est_premier(uniteCourante,_var_)){
+        var();
+    }else if(consume(LIRE)){
+        if(consume(PARENTHESE_OUVRANTE)){
+            if(!consume(PARENTHESE_FERMANTE)){
+                ERREUR();
+            }
+        }else{
+            ERREUR();
+        }
+    }else{
+        ERREUR();
+    }
+}
+
+void var(){
+    if(consume(ID_VAR)){
+        optIndice();
+    }else{
+        ERREUR();
+    }
+}
+
+void optIndice(){
+    if(consume(CROCHET_OUVRANT)){
+        expression();
+        if(!consume(CROCHET_FERMANT)){
+            ERREUR();
+        }
+    }else if(est_suivant(uniteCourante,_optIndice_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void appelFct(){
+    if(consume(ID_FCT)){
+        if(consume(PARENTHESE_OUVRANTE)){
+            listeExpressions();
+            if(!consume(PARENTHESE_FERMANTE)){
+                ERREUR();
+            }
+        }else{
+            ERREUR();
+        }
+    }else{
+        ERREUR();
+    }
+}
+
+void listeExpressions(){
+    if(est_premier(uniteCourante,_expression_)){
+        expression();
+        listeExpressionsBis();
+    }else if(est_suivant(uniteCourante,_listeExpressions_)){}
+    else{
+        ERREUR();
+    }
+}
+
+void listeExpressionsBis(){
+    if(consume(VIRGULE)){
+        expression();
+        listeExpressionsBis();
+    }else if(est_suivant(uniteCourante,_listeExpressionsBis_)){}
+    else{
+        ERREUR();
+    }
 }
 
 void listeDecVariables(){
@@ -184,8 +419,7 @@ void listeDecVariables(){
 }
 
 void listeDecVariablesBis(){
-    if(uniteCourante == VIRGULE){
-        uniteCourante == yylex();
+    if(consume(VIRGULE)){
         declarationVariable();
         listeDecVariablesBis();
     }else if(est_suivant(uniteCourante,_listeDecVariablesBis_)){}
@@ -195,10 +429,8 @@ void listeDecVariablesBis(){
 }
 
 void declarationVariable(){
-    if(uniteCourante == ENTIER){
-        uniteCourante == yylex();
-        if(uniteCourante == ID_VAR){
-            uniteCourante == yylex();
+    if(consume(ENTIER)){
+        if(consume(ID_VAR)){
             optTailleTableau();
         }else{
             erreur("declarationVariable");
@@ -209,13 +441,9 @@ void declarationVariable(){
 }
 
 void optTailleTableau(){
-    if(uniteCourante == CROCHET_OUVRANT){
-        uniteCourante = yylex();
-        if(uniteCourante == NOMBRE){
-            uniteCourante = yylex();
-            if(uniteCourante == CROCHET_FERMANT){
-                uniteCourante = yylex();
-            }else{
+    if(consume(CROCHET_OUVRANT)){
+        if(consume(NOMBRE)){
+            if(!consume(CROCHET_FERMANT)){
                 erreur("optTailleTableau");
             }
         }else{

@@ -21,7 +21,7 @@ void warning(char *message) {
 /*******************************************************************************
  * Affiche le message d'erreur donné en paramètre, avec le numéro de ligne 
  ******************************************************************************/
-void erreur(char *message) {
+void erreur(const char *message) {
   fprintf (stderr, "ERREUR ligne %d : ", yylineno);
   fprintf (stderr, "%s\n", message);
   exit(1);

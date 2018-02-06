@@ -11,6 +11,8 @@ UtiDir = util
 OBJ = $(LexDir)/analyseur_lexical_flex.o\
       $(SynDir)/analyseur_syntaxique.o\
       $(UtiDir)/util.o\
+      $(UtiDir)/premiers.o\
+      $(UtiDir)/suivants.o\
 
 all: compilateur
 
@@ -26,7 +28,7 @@ $(LexDir)/analyseur_lexical_flex.o: $(LexDir)/analyseur_lexical_flex.c
 $(SynDir)/analyseur_syntaxique.o: $(SynDir)/analyseur_syntaxique.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
-$(UtiDir)/util.o: $(UtiDir)/util.c
+$(UtiDir)/%.o: $(UtiDir)/%.c
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
 .PHONY : clean

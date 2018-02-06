@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     uniteCourante = yylex();  
     //nom_token( uniteCourante, nom, valeur );
     //printf("%s\t%s\t%s\n", yytext, nom, valeur);
-      E();
+      programme();
   } while (uniteCourante != FIN);
   
     printf("La compilation est magnifiquement recursif\n");
