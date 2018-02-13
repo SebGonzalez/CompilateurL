@@ -43,6 +43,8 @@ void initialise_premiers(void){
 	premiers[_listeInstructions_][ID_FCT] = 1;
 	premiers[_listeInstructions_][RETOUR] = 1;
 	premiers[_listeInstructions_][ECRIRE] = 1;
+	premiers[_listeInstructions_][EPSILON] = 1;
+	premiers[_listeInstructions_][POINT_VIRGULE] = 1;
 	premiers[_instructionSi_][SI] = 1;
 	premiers[_optSinon_][SINON] = 1;
 	premiers[_optSinon_][EPSILON] = 1;
@@ -79,14 +81,15 @@ void initialise_premiers(void){
 	premiers[_comparaison_][ID_VAR] = 1;
 	premiers[_comparaison_][LIRE] = 1;
 	premiers[_comparaisonBis_][EGAL] = 1;
-	premiers[_comparaisonBis_][PARENTHESE_OUVRANTE] = 1;
+	premiers[_comparaisonBis_][INFERIEUR] = 1;
 	premiers[_comparaisonBis_][EPSILON] = 1;
 	premiers[_expArith_][PARENTHESE_OUVRANTE] = 1;
 	premiers[_expArith_][NOMBRE] = 1;
 	premiers[_expArith_][ID_FCT] = 1;
 	premiers[_expArith_][ID_VAR] = 1;
 	premiers[_expArith_][LIRE] = 1;
-	premiers[_expArithBis_][OU] = 1;
+	premiers[_expArithBis_][PLUS] = 1;
+	premiers[_expArithBis_][MOINS] = 1;
 	premiers[_expArithBis_][EPSILON] = 1;
 	premiers[_terme_][PARENTHESE_OUVRANTE] = 1;
 	premiers[_terme_][NOMBRE] = 1;
@@ -111,6 +114,7 @@ void initialise_premiers(void){
 	premiers[_listeExpressions_][ID_FCT] = 1;
 	premiers[_listeExpressions_][ID_VAR] = 1;
 	premiers[_listeExpressions_][LIRE] = 1;
+	premiers[_listeExpressions_][EPSILON] = 1;
 	premiers[_listeExpressionsBis_][VIRGULE] = 1;
 	premiers[_listeExpressionsBis_][EPSILON] = 1;
 

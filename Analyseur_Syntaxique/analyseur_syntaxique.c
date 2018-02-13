@@ -1,10 +1,10 @@
 #include "analyseur_syntaxique.h"
 
 int consume(int x){
-    char valeur[10];
-    char valeur2[10];
-    char nom[10];
-    char nom2[10];
+    char valeur[20];
+    char valeur2[20];
+    char nom[20];
+    char nom2[20];
     nom_token(x,nom,valeur);
 
     if(uniteCourante == x){
@@ -13,7 +13,7 @@ int consume(int x){
         return 1;
     }else{
         nom_token(uniteCourante,nom2,valeur2);
-        fprintf(stderr,"%s expected %s found\n", valeur, valeur2);
+        fprintf(stderr,"%s expected (of type %s) %s found (of type %s)\n", valeur, nom, valeur2, nom2);
     }   
 
     return 0;
