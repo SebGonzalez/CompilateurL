@@ -2,13 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../util/symboles.h"
-#include "../util/util.h"
 #include "../util/premiers.h"
 #include "../util/suivants.h"
 
 int yylex(void);
 extern char *yytext;
 FILE *yyin;
+
+FILE *sortie_xml;
+char texte_xml[1000000];
+void balise_ouvrante(const char *fonction);
 
 //Prototypes
 

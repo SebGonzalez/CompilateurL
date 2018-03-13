@@ -150,6 +150,7 @@ void initialise_suivants(void){
   suivants[_expression_][PARENTHESE_FERMANTE] = 1;
   suivants[_expression_][CROCHET_FERMANT] = 1;
   suivants[_expression_][VIRGULE] = 1;
+  suivants[_expression_][DEUXPOINTS] = 1;
 
   suivants[_expressionBis_][POINT_VIRGULE] = 1;
   suivants[_expressionBis_][ALORS] = 1;
@@ -157,6 +158,7 @@ void initialise_suivants(void){
   suivants[_expressionBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_expressionBis_][CROCHET_FERMANT] = 1;
   suivants[_expressionBis_][VIRGULE] = 1;
+  suivants[_expressionBis_][DEUXPOINTS] = 1;
 
   suivants[_conjonction_][OU] = 1;
   suivants[_conjonction_][POINT_VIRGULE] = 1;
@@ -165,6 +167,8 @@ void initialise_suivants(void){
   suivants[_conjonction_][PARENTHESE_FERMANTE] = 1;
   suivants[_conjonction_][CROCHET_FERMANT] = 1;
   suivants[_conjonction_][VIRGULE] = 1;
+  suivants[_conjonction_][INTERROGATION] = 1;
+  suivants[_conjonction_][DEUXPOINTS] = 1;
 
   suivants[_conjonctionBis_][OU] = 1;
   suivants[_conjonctionBis_][POINT_VIRGULE] = 1;
@@ -173,7 +177,15 @@ void initialise_suivants(void){
   suivants[_conjonctionBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_conjonctionBis_][CROCHET_FERMANT] = 1;
   suivants[_conjonctionBis_][VIRGULE] = 1;
+  suivants[_conjonctionBis_][DEUXPOINTS] = 1;
+  suivants[_conjonctionBis_][INTERROGATION] = 1;
 
+  suivants[_negation_][FOIS] = 1;
+  suivants[_negation_][DIVISE] = 1;
+  suivants[_negation_][PLUS] = 1;
+  suivants[_negation_][MOINS] = 1;
+  suivants[_negation_][EGAL] = 1;
+  suivants[_negation_][INFERIEUR] = 1;
   suivants[_negation_][ET] = 1;
   suivants[_negation_][OU] = 1;
   suivants[_negation_][POINT_VIRGULE] = 1;
@@ -182,6 +194,7 @@ void initialise_suivants(void){
   suivants[_negation_][PARENTHESE_FERMANTE] = 1;
   suivants[_negation_][CROCHET_FERMANT] = 1;
   suivants[_negation_][VIRGULE] = 1;
+  suivants[_negation_][INTERROGATION] = 1;
 
   suivants[_comparaison_][ET] = 1;
   suivants[_comparaison_][OU] = 1;
@@ -191,6 +204,8 @@ void initialise_suivants(void){
   suivants[_comparaison_][PARENTHESE_FERMANTE] = 1;
   suivants[_comparaison_][CROCHET_FERMANT] = 1;
   suivants[_comparaison_][VIRGULE] = 1;
+  suivants[_comparaison_][INTERROGATION] = 1;
+  suivants[_comparaison_][DEUXPOINTS] = 1;
 
   suivants[_comparaisonBis_][ET] = 1;
   suivants[_comparaisonBis_][OU] = 1;
@@ -200,6 +215,8 @@ void initialise_suivants(void){
   suivants[_comparaisonBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_comparaisonBis_][CROCHET_FERMANT] = 1;
   suivants[_comparaisonBis_][VIRGULE] = 1;
+  suivants[_comparaisonBis_][INTERROGATION] = 1;
+  suivants[_comparaisonBis_][DEUXPOINTS] = 1;
 
   suivants[_expArith_][EGAL] = 1;
   suivants[_expArith_][INFERIEUR] = 1;
@@ -211,6 +228,8 @@ void initialise_suivants(void){
   suivants[_expArith_][PARENTHESE_FERMANTE] = 1;
   suivants[_expArith_][CROCHET_FERMANT] = 1;
   suivants[_expArith_][VIRGULE] = 1;
+  suivants[_expArith_][DEUXPOINTS] = 1;
+  suivants[_expArith_][INTERROGATION] = 1;
 
   suivants[_expArithBis_][EGAL] = 1;
   suivants[_expArithBis_][INFERIEUR] = 1;
@@ -222,6 +241,8 @@ void initialise_suivants(void){
   suivants[_expArithBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_expArithBis_][CROCHET_FERMANT] = 1;
   suivants[_expArithBis_][VIRGULE] = 1;
+  suivants[_expArithBis_][DEUXPOINTS] = 1;
+  suivants[_expArithBis_][INTERROGATION] = 1;
 
   suivants[_terme_][PLUS] = 1;
   suivants[_terme_][MOINS] = 1;
@@ -235,6 +256,8 @@ void initialise_suivants(void){
   suivants[_terme_][PARENTHESE_FERMANTE] = 1;
   suivants[_terme_][CROCHET_FERMANT] = 1;
   suivants[_terme_][VIRGULE] = 1;
+  suivants[_terme_][INTERROGATION] = 1;
+  suivants[_terme_][DEUXPOINTS] = 1;
 
   suivants[_termeBis_][PLUS] = 1;
   suivants[_termeBis_][MOINS] = 1;
@@ -248,6 +271,8 @@ void initialise_suivants(void){
   suivants[_termeBis_][PARENTHESE_FERMANTE] = 1;
   suivants[_termeBis_][CROCHET_FERMANT] = 1;
   suivants[_termeBis_][VIRGULE] = 1;
+  suivants[_termeBis_][INTERROGATION] = 1;
+  suivants[_termeBis_][DEUXPOINTS] = 1;
 
   suivants[_facteur_][FOIS] = 1;
   suivants[_facteur_][DIVISE] = 1;
@@ -263,6 +288,8 @@ void initialise_suivants(void){
   suivants[_facteur_][PARENTHESE_FERMANTE] = 1;
   suivants[_facteur_][CROCHET_FERMANT] = 1;
   suivants[_facteur_][VIRGULE] = 1;
+  suivants[_facteur_][INTERROGATION] = 1;
+  suivants[_facteur_][DEUXPOINTS] = 1;
 
   suivants[_var_][EGAL] = 1;
   suivants[_var_][FOIS] = 1;
@@ -278,6 +305,8 @@ void initialise_suivants(void){
   suivants[_var_][PARENTHESE_FERMANTE] = 1;
   suivants[_var_][CROCHET_FERMANT] = 1;
   suivants[_var_][VIRGULE] = 1;
+  suivants[_var_][INTERROGATION] = 1;
+  suivants[_var_][DEUXPOINTS] = 1;
 
   suivants[_optIndice_][EGAL] = 1;
   suivants[_optIndice_][FOIS] = 1;
@@ -293,6 +322,8 @@ void initialise_suivants(void){
   suivants[_optIndice_][PARENTHESE_FERMANTE] = 1;
   suivants[_optIndice_][CROCHET_FERMANT] = 1;
   suivants[_optIndice_][VIRGULE] = 1;
+  suivants[_optIndice_][INTERROGATION] = 1;
+  suivants[_optIndice_][DEUXPOINTS] = 1;
 
   suivants[_appelFct_][FOIS] = 1;
   suivants[_appelFct_][DIVISE] = 1;
@@ -308,6 +339,8 @@ void initialise_suivants(void){
   suivants[_appelFct_][PARENTHESE_FERMANTE] = 1;
   suivants[_appelFct_][CROCHET_FERMANT] = 1;
   suivants[_appelFct_][VIRGULE] = 1;
+  suivants[_appelFct_][INTERROGATION] = 1;
+  suivants[_appelFct_][DEUXPOINTS] = 1;
 
   suivants[_listeExpressions_][PARENTHESE_FERMANTE] = 1;
 

@@ -3,7 +3,7 @@
  */
  
 %{
-#include "symboles.h"
+#include "../util/symboles.h"
 %}
 %option yylineno
 %option nounput
@@ -15,7 +15,9 @@ alphanum {lettre}|{chiffre}
 
 /* Déclarations à compléter ... */
 
+
 %%
+<<EOF>>              { return FIN;                 } 
 {chiffre}+                                      {return NOMBRE;}
 ";"                                             {return POINT_VIRGULE;}
 "+"                                             {return PLUS;}
@@ -33,6 +35,8 @@ alphanum {lettre}|{chiffre}
 "&"                                             {return ET;}
 "|"                                             {return OU;}
 "!"                                             {return NON;}
+"?"						{return INTERROGATION;}
+":"						{return DEUXPOINTS;}
 "si"                                            {return SI;}
 "alors"                                         {return ALORS;}
 "sinon"                                         {return SINON;}
@@ -42,14 +46,14 @@ alphanum {lettre}|{chiffre}
 "retour"                                        {return RETOUR;}
 "lire"                                          {return LIRE;}
 "ecrire"                                        {return ECRIRE;}
-"$"({alphanum}|_)+                              {return ID_VAR;}
+"$"({alphanum}|_|$)*                            {return ID_VAR;}
 ({lettre}|"_")({alphanum}|"_")*                 {return ID_FCT;}
 ","                                             {return VIRGULE;}
 
 [ \t\n] ; /* ignore les blancs, tabulations et retour à la ligne */
 #.* ; //on ignore les commentaires
-<<EOF>>              { return FIN;                 }  /* Fin de fichier */
 
+.						{printf("Symbole non reconnu\n"); exit(1);}
 %%
 int yywrap(){
   return 1;
