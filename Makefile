@@ -2,7 +2,7 @@ CC = gcc
 CCFLAGS = -Wall -ggdb -std=c99
 LIBS = -lm
 
-FLEX = ./Analyseur_Lexical/flex
+FLEX = flex
 
 LexDir = Analyseur_Lexical
 SynDir = Analyseur_Syntaxique
