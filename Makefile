@@ -1,5 +1,5 @@
 CC = gcc 
-CCFLAGS = -Wall -ggdb -std=c99
+CCFLAGS = -Wall -ggdb -std=gnu99
 LIBS = -lm
 
 FLEX = flex

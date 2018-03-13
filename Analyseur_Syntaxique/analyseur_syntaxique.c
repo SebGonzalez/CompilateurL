@@ -18,7 +18,7 @@ int consume(int x){
     //nom_token(x,nom,valeur);
 
     if(uniteCourante == x){
-    	char nom[100], valeur[100];
+    	//char nom[100], valeur[100];
     
       //nom_token( uniteCourante, nom, valeur );
       //printf("%s\t%s\t%s\n", yytext, nom, valeur);
