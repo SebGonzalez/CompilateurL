@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
   //char valeur[100];  
   int trace_analyseur_lexical = 0;
   int trace_xml = 0;
+  int arbre_abstrait = 0;
 
   charger_fichier(argv[argc-1]);
 
@@ -23,13 +24,17 @@ int main(int argc, char **argv) {
     if(strcmp("-l", argv[i]) == 0) {
       trace_analyseur_lexical = 1;
     }
+    else if(strcmp("-a", argv[i]) == 0) {
+      arbre_abstrait = 1;
+    }
     else if(strcmp("-s", argv[i]) == 0) {
       trace_xml = 1;
       setTraceXml(1);
     }
-    else if(strcmp("-a", argv[i]) == 0) {
+    else if(strcmp("-all", argv[i]) == 0) {
       trace_analyseur_lexical = 1;
       trace_xml = 1;
+      arbre_abstrait = 1;
        setTraceXml(1);
     }
   }
@@ -43,10 +48,13 @@ int main(int argc, char **argv) {
       affiche_analyseur_lexical(uniteCourante, trace_analyseur_lexical);
     } while (uniteCourante != FIN);
   }
-  if(trace_xml) {
-    if(fichier_utilise == 1)  charger_fichier(argv[argc-1]);
-    uniteCourante = yylex(); 
-    programme();
-  }
+
+  if(fichier_utilise == 1)  charger_fichier(argv[argc-1]);
+  uniteCourante = yylex(); 
+  n_prog *n = programme();
+  fichier_utilise = 1;
+
+  if(arbre_abstrait)
+      affiche_n_prog(n);
   return 0;
 }

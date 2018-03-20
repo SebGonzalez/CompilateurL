@@ -11,8 +11,10 @@ UtiDir = util
 OBJ = $(LexDir)/analyseur_lexical_flex.o\
       $(SynDir)/analyseur_syntaxique.o\
       $(UtiDir)/util.o\
+      $(UtiDir)/syntabs.o\
       $(UtiDir)/premiers.o\
       $(UtiDir)/suivants.o\
+      $(UtiDir)/affiche_arbre_abstrait.o\
 
 all: compilateur
 

@@ -4,6 +4,8 @@
 #include "../util/symboles.h"
 #include "../util/premiers.h"
 #include "../util/suivants.h"
+#include "../util/syntabs.h"
+#include "../util/affiche_arbre_abstrait.h"
 
 int yylex(void);
 extern char *yytext;
@@ -15,44 +17,44 @@ void balise_ouvrante(const char *fonction);
 
 //Prototypes
 
-void programme();
-void optDecVariables();
-void listeDecVariables();
-void listeDecVariablesBis();
-void declarationVariable();
-void optTailleTableau();
-void listeDecFonctions();
-void declarationFonction();
-void listeParam();
-void optListeDecVariables();
-void instruction();
-void instructionAffect();
-void instructionBloc();
-void listeInstructions();
-void instructionSi();
-void optSinon();
-void instructionTantque();
-void instructionAppel();
-void instructionRetour();
-void instructionEcriture();
-void instructionVide();
-void expression();
-void expressionBis();
-void conjonction();
-void conjonctionBis();
-void negation();
-void comparaison();
-void comparaisonBis();
-void expArith();
-void expArithBis();
-void terme();
-void termeBis();
-void facteur();
-void var();
-void optIndice();
-void appelFct();
-void listeExpressions();
-void listeExpressionsBis();
+n_prog *programme();
+n_l_dec *optDecVariables();
+n_l_dec *listeDecVariables();
+n_l_dec *listeDecVariablesBis();
+n_dec *declarationVariable();
+int optTailleTableau();
+n_l_dec *listeDecFonctions();
+n_dec *declarationFonction();
+n_l_dec *listeParam();
+n_l_dec *optListeDecVariables();
+n_instr *instruction();
+n_instr *instructionAffect();
+n_instr *instructionBloc();
+n_l_instr *listeInstructions();
+n_instr *instructionSi();
+n_instr *optSinon();
+n_instr *instructionTantque();
+n_instr *instructionAppel();
+n_instr *instructionRetour();
+n_instr *instructionEcriture();
+n_instr *instructionVide();
+n_exp *expression();
+n_exp *expressionBis();
+n_exp *conjonction();
+n_exp *conjonctionBis();
+n_exp *negation();
+n_exp *comparaison();
+n_exp *comparaisonBis();
+n_exp *expArith();
+n_exp *expArithBis();
+n_exp *terme();
+n_exp *termeBis();
+n_exp *facteur();
+n_exp *var();
+n_var *optIndice();
+n_appel *appelFct();
+n_l_exp *listeExpressions();
+n_l_exp *listeExpressionsBis();
 
 int uniteCourante;
 
