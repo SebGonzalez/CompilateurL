@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
   //char valeur[100];  
   int trace_analyseur_lexical = 0;
   int trace_xml = 0;
+  (void)trace_xml;
   int arbre_abstrait = 0;
 
   charger_fichier(argv[argc-1]);

@@ -542,7 +542,7 @@ n_exp *expression(){
 n_exp *expressionBis(n_exp *herite){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
+	
 	n_exp *herite_fils = NULL;
 
     balise_ouvrante(__FUNCTION__);
@@ -554,8 +554,10 @@ n_exp *expressionBis(n_exp *herite){
         return $$;
 	}else if(consume(INTERROGATION)){
 		$1 = expression();
+        n_exp *$2 = NULL;
 		if(consume(DEUXPOINTS)) {
 			$2 = expression();
+            (void)$2;
 		}
 		//$$ = cree_n_exp_op($1->type, $1, $2);
 		balise_fermante(__FUNCTION__);
