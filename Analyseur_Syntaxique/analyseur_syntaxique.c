@@ -127,7 +127,7 @@ n_dec *declarationVariable(){
     balise_ouvrante(__FUNCTION__);
     if(consume(ENTIER)){
 
-        char *nom = malloc(sizeof(char *));
+        char *nom = malloc(sizeof(char) * strlen(yytext)+1);
         strcpy(nom, yytext);
 
         if(consume(ID_VAR)){
@@ -146,7 +146,7 @@ n_dec *declarationVariable(){
 
 int optTailleTableau(){
     int taille;
-	char *nombre = malloc(sizeof(char *));
+	char *nombre = malloc(sizeof(char) * strlen(yytext)+1);
     balise_ouvrante(__FUNCTION__);
     if(consume(CROCHET_OUVRANT)){
         if(consume(NOMBRE)){
@@ -196,7 +196,7 @@ n_dec *declarationFonction(){
     n_instr *$3 = NULL;
     balise_ouvrante(__FUNCTION__);
 
-    char *nom = malloc(sizeof(char *));
+    char *nom = malloc(sizeof(char) * strlen(yytext) +1);
     strcpy(nom, yytext);
     if(consume(ID_FCT)){
         $1 = listeParam();
@@ -516,9 +516,9 @@ n_exp *expressionBis(n_exp *herite){
 		if(consume(DEUXPOINTS)) {
 			$2 = expression();
 		}
-		$$ = cree_n_exp_op($1->type, $1, $2);
+		//$$ = cree_n_exp_op($1->type, $1, $2);
 		balise_fermante(__FUNCTION__);
-		return $$;
+		return NULL;
     }else if(est_suivant(uniteCourante,_expressionBis_)){
         balise_fermante(__FUNCTION__);
         return NULL;
@@ -531,13 +531,11 @@ n_exp *expressionBis(n_exp *herite){
 n_exp *conjonction(){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
 	
     balise_ouvrante(__FUNCTION__);
     if(est_premier(uniteCourante,_negation_)){
         $1 = comparaison();
-        $2 = conjonctionBis();
-        $$  = cree_n_exp_op($1->type, $1, $2);
+        $$ = conjonctionBis($1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else{
@@ -545,16 +543,16 @@ n_exp *conjonction(){
     }
 }
 
-n_exp *conjonctionBis(){
+n_exp *conjonctionBis(n_exp *herite){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
+	n_exp *herite_fils = NULL;
 
     balise_ouvrante(__FUNCTION__);
     if(consume(ET)){
         $1 = comparaison();
-        $2 = conjonctionBis();
-        $$ = cree_n_exp_op(ET, $1, $2);
+        herite_fils = cree_n_exp_op(et, herite, $1);
+        $$ = conjonctionBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_suivant(uniteCourante,_conjonctionBis_)){
@@ -577,8 +575,7 @@ n_exp *negation(){
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_premier(uniteCourante,_facteur_)){
-        $1 = facteur();
-        $$ = cree_n_exp_op($1->type, $1, NULL);
+        $$ = facteur();
         balise_fermante(__FUNCTION__);
         return $$;
     }else{
@@ -589,13 +586,11 @@ n_exp *negation(){
 n_exp *comparaison(){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
 
     balise_ouvrante(__FUNCTION__);
     if(est_premier(uniteCourante,_expArith_)){
         $1 = expArith();
-        $2 = comparaisonBis();
-        $$ = cree_n_exp_op($1->type, $1, NULL);
+        $$ = comparaisonBis($1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else{
@@ -603,22 +598,22 @@ n_exp *comparaison(){
     }
 }
 
-n_exp *comparaisonBis(){
+n_exp *comparaisonBis(n_exp *herite){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
+	n_exp *herite_fils = NULL;
 
     balise_ouvrante(__FUNCTION__);
     if(consume(EGAL)){
         $1 = expArith();
-        $2 = comparaisonBis();
-        $$ = cree_n_exp_op(EGAL, $1, NULL);
+        herite_fils = cree_n_exp_op(egal, herite, $1);
+        $$ = comparaisonBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(INFERIEUR)){
         $1 = expArith();
-        $2 = comparaisonBis();
-        $$ = cree_n_exp_op(MOINS, $1, NULL);
+        herite_fils = cree_n_exp_op(inferieur, herite, $1);
+        $$ = comparaisonBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_suivant(uniteCourante,_comparaisonBis_)){
@@ -653,13 +648,13 @@ n_exp *expArithBis(n_exp *herite){
     balise_ouvrante(__FUNCTION__);
     if(consume(PLUS)){
         $1 = terme();
-        herite_fils = cree_n_exp_op(PLUS, herite, $1);
+        herite_fils = cree_n_exp_op(plus, herite, $1);
         $$ = expArithBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(MOINS)){
         $1 = terme();
-        herite_fils = cree_n_exp_op(MOINS, herite, $1);
+        herite_fils = cree_n_exp_op(moins, herite, $1);
         $$ = expArithBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
@@ -695,13 +690,13 @@ n_exp *termeBis(n_exp *herite){
     balise_ouvrante(__FUNCTION__);
     if(consume(FOIS)){
         $1 = negation();
-        herite_fils = cree_n_exp_op(FOIS, herite, $1);
+        herite_fils = cree_n_exp_op(fois, herite, $1);
         $$ = termeBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(DIVISE)){
         $1 = negation();
-        herite_fils = cree_n_exp_op(DIVISE, herite, $1);
+        herite_fils = cree_n_exp_op(divise, herite, $1);
         $$ = termeBis(herite_fils);
         balise_fermante(__FUNCTION__);
         return $$;
@@ -718,6 +713,10 @@ n_exp *facteur(){
 	n_exp *$$ = NULL;
 
     balise_ouvrante(__FUNCTION__);
+
+    char *nombre = malloc(sizeof(char)*strlen(yytext)+1);
+    strcpy(nombre, yytext);
+
     if(consume(PARENTHESE_OUVRANTE)){
         $$ = expression();
         if(!consume(PARENTHESE_FERMANTE)){
@@ -726,8 +725,10 @@ n_exp *facteur(){
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(NOMBRE)){
-    	char *nombre = malloc(sizeof(char *));
-        strcpy(nombre, yytext);
+    
+        //printf("Nombre eee %s\n", nombre);
+       	int i = atoi(nombre);
+   		printf("Nombre eee %s %d\n", nombre, i);
         $$ = cree_n_exp_entier(atoi(nombre));
         balise_fermante(__FUNCTION__);
         return $$;
@@ -738,7 +739,8 @@ n_exp *facteur(){
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_premier(uniteCourante,_var_)){
-        $$ = var();
+        n_var *$1 = var();
+        $$ = cree_n_exp_var($1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(LIRE)){
@@ -757,14 +759,20 @@ n_exp *facteur(){
     }
 }
 
-n_exp *var(){
-	n_exp *$$ = NULL;
+n_var *var(){
+	n_var *$$ = NULL;
 	n_var *$1 = NULL;
 
     balise_ouvrante(__FUNCTION__);
+    char *nom = malloc(sizeof(char) * strlen(yytext)+1);
+    strcpy(nom, yytext);
     if(consume(ID_VAR)){
         $1 = optIndice();
-        $$ = cree_n_exp_var($1);
+        if($1 == NULL)
+        	$$ = cree_n_var_simple(nom);
+        else
+        	$$ = cree_n_var_indicee(nom, $1);
+
         balise_fermante(__FUNCTION__);
         return $$;
     }else{
@@ -772,29 +780,27 @@ n_exp *var(){
     }
 }
 
-n_var *optIndice(){
-	n_var *$$ = NULL;
-	n_exp *$1 = NULL;
+n_exp *optIndice(){
+	n_exp *$$ = NULL;
 
     balise_ouvrante(__FUNCTION__);
     if(consume(CROCHET_OUVRANT)){
-    	char *nom = malloc(sizeof(char *));
+    	char *nom = malloc(sizeof(char) * strlen(yytext) + 1);
     	strcpy(nom, yytext);
-    	printf("Variable : %s\n", yytext);
-        $1 = expression();
+    	printf("Variable1 : %s\n", yytext);
+        $$ = expression();
         if(!consume(CROCHET_FERMANT)){
             ERREUR();
         }
-        $$ = cree_n_var_indicee(nom, $1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_suivant(uniteCourante,_optIndice_)){
-    	char *nom = malloc(sizeof(char *));
+    	char *nom = malloc(sizeof(char) * (strlen(yytext)+1)) ;
     	strcpy(nom, yytext);
-    	printf("Variable : %s\n", yytext);
-    	$$ = cree_n_var_simple(nom);
+    	printf("Variable2 : %s\n", yytext);
+    	//$$ = cree_n_var_simple(nom);
         balise_fermante(__FUNCTION__);
-        return $$;
+        return NULL;
     }
     else{
         ERREUR();
@@ -806,7 +812,7 @@ n_appel *appelFct(){
 	n_l_exp *$1 = NULL;
     balise_ouvrante(__FUNCTION__);
     if(consume(ID_FCT)){
-    	char *fonction = malloc(sizeof(char *));
+    	char *fonction = malloc(sizeof(char) * strlen(yytext)+1);
     	strcpy(fonction, yytext);
         if(consume(PARENTHESE_OUVRANTE)){
             $1 = listeExpressions();
