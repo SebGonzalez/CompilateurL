@@ -6,6 +6,7 @@
 #include "../util/suivants.h"
 #include "../util/syntabs.h"
 #include "../util/affiche_arbre_abstrait.h"
+#include "../util/util.h"
 
 int yylex(void);
 extern char *yytext;
@@ -14,6 +15,7 @@ FILE *yyin;
 FILE *sortie_xml;
 char texte_xml[1000000];
 void balise_ouvrante(const char *fonction);
+void setTraceXml(int trace);
 
 //Prototypes
 
