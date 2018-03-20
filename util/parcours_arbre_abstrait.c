@@ -186,7 +186,7 @@ void parcours_foncDec(n_dec *n)
   if(firstFunctionDeclaration != -1){
     erreur("Une autre fonction de meme nom existe deja\n");
   }
-  //Comment tester le nombre de parametres ?
+  //Comment avoir le nombre de parametres ?
   entreeFonction();
   parcours_l_dec(n->u.foncDec_.param);
   portee = P_VARIABLE_LOCALE;
