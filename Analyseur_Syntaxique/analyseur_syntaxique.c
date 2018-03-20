@@ -146,15 +146,17 @@ n_dec *declarationVariable(){
 
 int optTailleTableau(){
     int taille;
-	char *nombre = malloc(sizeof(char) * strlen(yytext)+1);
+	
     balise_ouvrante(__FUNCTION__);
+
     if(consume(CROCHET_OUVRANT)){
+    	char *nombre = malloc(sizeof(char) * strlen(yytext)+1);
+		strcpy(nombre, yytext);
+		printf("NOedbjkefb %d", atoi(nombre));
         if(consume(NOMBRE)){
             if(!consume(CROCHET_FERMANT)){
                 erreur("optTailleTableau");
             }
-
-            strcpy(nombre, yytext);
         }else{
             erreur("optTailleTableau");
         }
@@ -521,7 +523,7 @@ n_exp *expressionBis(n_exp *herite){
 		return NULL;
     }else if(est_suivant(uniteCourante,_expressionBis_)){
         balise_fermante(__FUNCTION__);
-        return NULL;
+        return herite;
     }
     else{
         ERREUR();
@@ -557,7 +559,7 @@ n_exp *conjonctionBis(n_exp *herite){
         return $$;
     }else if(est_suivant(uniteCourante,_conjonctionBis_)){
         balise_fermante(__FUNCTION__);
-        return NULL;
+        return herite;
     }
     else{
         ERREUR();
@@ -618,7 +620,7 @@ n_exp *comparaisonBis(n_exp *herite){
         return $$;
     }else if(est_suivant(uniteCourante,_comparaisonBis_)){
         balise_fermante(__FUNCTION__);
-        return NULL;
+        return herite;
     }
     else{
         ERREUR();
@@ -785,8 +787,6 @@ n_exp *optIndice(){
 
     balise_ouvrante(__FUNCTION__);
     if(consume(CROCHET_OUVRANT)){
-    	char *nom = malloc(sizeof(char) * strlen(yytext) + 1);
-    	strcpy(nom, yytext);
     	printf("Variable1 : %s\n", yytext);
         $$ = expression();
         if(!consume(CROCHET_FERMANT)){
@@ -795,10 +795,6 @@ n_exp *optIndice(){
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_suivant(uniteCourante,_optIndice_)){
-    	char *nom = malloc(sizeof(char) * (strlen(yytext)+1)) ;
-    	strcpy(nom, yytext);
-    	printf("Variable2 : %s\n", yytext);
-    	//$$ = cree_n_var_simple(nom);
         balise_fermante(__FUNCTION__);
         return NULL;
     }
@@ -811,9 +807,10 @@ n_appel *appelFct(){
 	n_appel *$$ = NULL;
 	n_l_exp *$1 = NULL;
     balise_ouvrante(__FUNCTION__);
+    char *fonction = malloc(sizeof(char) * strlen(yytext)+1);
+    strcpy(fonction, yytext);
+
     if(consume(ID_FCT)){
-    	char *fonction = malloc(sizeof(char) * strlen(yytext)+1);
-    	strcpy(fonction, yytext);
         if(consume(PARENTHESE_OUVRANTE)){
             $1 = listeExpressions();
             if(!consume(PARENTHESE_FERMANTE)){
