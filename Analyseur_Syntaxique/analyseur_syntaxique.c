@@ -79,6 +79,8 @@ n_l_dec *optDecVariables(){
     else{
         erreur("optDecVariables");
     }
+
+    return NULL;
 }
 
 n_l_dec *listeDecVariables(){
@@ -97,6 +99,8 @@ n_l_dec *listeDecVariables(){
     }else{
         erreur("listeDecVariables");
     }
+
+    return NULL;
 }
 
 
@@ -119,11 +123,12 @@ n_l_dec *listeDecVariablesBis(){
     else{
         erreur("listeDecVariablesBis");
     }
+
+    return NULL;
 }
 
 n_dec *declarationVariable(){
     n_dec *$$ = NULL;
-    int $2;
     balise_ouvrante(__FUNCTION__);
     if(consume(ENTIER)){
 
@@ -142,11 +147,11 @@ n_dec *declarationVariable(){
     }else{
         erreur("declarationVariable");
     }
+
+    return NULL;
 }
 
 int optTailleTableau(){
-    int taille;
-	
     balise_ouvrante(__FUNCTION__);
 
     if(consume(CROCHET_OUVRANT)){
@@ -169,6 +174,9 @@ int optTailleTableau(){
     else{
         erreur("optTailleTableau");
     }
+
+    //Retourne -1 a la place de NULL
+    return -1;
 }
 
 n_l_dec *listeDecFonctions(){
@@ -189,6 +197,8 @@ n_l_dec *listeDecFonctions(){
     else{
         erreur("listeDecFonctions");
     }
+
+    return NULL;
 }
 
 n_dec *declarationFonction(){
@@ -210,6 +220,8 @@ n_dec *declarationFonction(){
     }else{
         erreur("declarationFonction");
     }
+
+    return NULL;
 }
 
 n_l_dec *listeParam(){
@@ -226,6 +238,8 @@ n_l_dec *listeParam(){
     }else{
         erreur("listeParam");
     }
+
+    return NULL;
 }
 
 n_l_dec *optListeDecVariables(){
@@ -242,6 +256,8 @@ n_l_dec *optListeDecVariables(){
     }else{
         erreur("optListeDecVariables");
     }
+
+    return NULL;
 }
 
 n_instr *instruction(){
@@ -283,6 +299,8 @@ n_instr *instruction(){
     }else{
         erreur("instruction");
     }
+
+    return NULL;
 }
 
 n_instr *instructionAffect(){
@@ -307,6 +325,8 @@ n_instr *instructionAffect(){
     }else{
         erreur("instructionAffect");
     }
+
+    return NULL;
 }
 
 n_instr *instructionBloc(){
@@ -325,6 +345,8 @@ n_instr *instructionBloc(){
     }else{
         erreur("instructionBloc");
     }
+
+    return NULL;
 }
 
 n_l_instr *listeInstructions(){
@@ -346,6 +368,8 @@ n_l_instr *listeInstructions(){
     else{
         erreur("listeInstructions");
     }
+
+    return NULL;
 }
 
 n_instr *instructionSi(){
@@ -369,6 +393,8 @@ n_instr *instructionSi(){
     }else{
         erreur("instructionSi");
     }
+
+    return NULL;
 }
 
 n_instr *optSinon(){
@@ -385,6 +411,8 @@ n_instr *optSinon(){
     else{
         erreur("optSinon");
     }
+
+    return NULL;
 }
 
 n_instr *instructionTantque(){
@@ -406,6 +434,8 @@ n_instr *instructionTantque(){
     }else{
         erreur("instructionTantque");
     }
+
+    return NULL;
 }
 
 n_instr *instructionAppel(){
@@ -424,6 +454,8 @@ n_instr *instructionAppel(){
     }else{
         erreur("instructionAppel");
     }
+
+    return NULL;
 }
 
 n_instr *instructionRetour(){
@@ -442,6 +474,8 @@ n_instr *instructionRetour(){
     }else{
         erreur("instructionRetour");
     }
+
+    return NULL;
 }
 
 n_instr *instructionEcriture(){
@@ -468,6 +502,8 @@ n_instr *instructionEcriture(){
     }else{
         erreur("instructionEcriture");
     }
+
+    return NULL;
 }
 
 n_instr *instructionVide(){
@@ -482,12 +518,13 @@ n_instr *instructionVide(){
         balise_fermante(__FUNCTION__);
         return $$;
     }
+
+    return NULL;
 }
 
 n_exp *expression(){
 	n_exp *$$ = NULL;
 	n_exp *$1 = NULL;
-	n_exp *$2 = NULL;
 
     balise_ouvrante(__FUNCTION__);
     if(est_premier(uniteCourante,_conjonction_)){
@@ -498,6 +535,8 @@ n_exp *expression(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *expressionBis(n_exp *herite){
@@ -528,6 +567,8 @@ n_exp *expressionBis(n_exp *herite){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *conjonction(){
@@ -543,6 +584,8 @@ n_exp *conjonction(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *conjonctionBis(n_exp *herite){
@@ -564,6 +607,8 @@ n_exp *conjonctionBis(n_exp *herite){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *negation(){
@@ -583,6 +628,8 @@ n_exp *negation(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *comparaison(){
@@ -598,6 +645,8 @@ n_exp *comparaison(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *comparaisonBis(n_exp *herite){
@@ -625,6 +674,8 @@ n_exp *comparaisonBis(n_exp *herite){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *expArith(){
@@ -640,6 +691,8 @@ n_exp *expArith(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *expArithBis(n_exp *herite){
@@ -667,6 +720,8 @@ n_exp *expArithBis(n_exp *herite){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *terme(){
@@ -682,6 +737,8 @@ n_exp *terme(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *termeBis(n_exp *herite){
@@ -709,6 +766,8 @@ n_exp *termeBis(n_exp *herite){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *facteur(){
@@ -737,7 +796,7 @@ n_exp *facteur(){
     }
     else if(est_premier(uniteCourante,_appelFct_)){
         n_appel *$1 = appelFct();
-        $$ = cree_n_instr_appel($1);
+        n_instr * $$ = cree_n_instr_appel($1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_premier(uniteCourante,_var_)){
@@ -759,17 +818,18 @@ n_exp *facteur(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_var *var(){
 	n_var *$$ = NULL;
-	n_var *$1 = NULL;
 
     balise_ouvrante(__FUNCTION__);
     char *nom = malloc(sizeof(char) * strlen(yytext)+1);
     strcpy(nom, yytext);
     if(consume(ID_VAR)){
-        $1 = optIndice();
+        n_exp * $1 = optIndice();
         if($1 == NULL)
         	$$ = cree_n_var_simple(nom);
         else
@@ -780,6 +840,8 @@ n_var *var(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_exp *optIndice(){
@@ -801,6 +863,8 @@ n_exp *optIndice(){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_appel *appelFct(){
@@ -825,6 +889,8 @@ n_appel *appelFct(){
     }else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_l_exp *listeExpressions(){
@@ -846,6 +912,8 @@ n_l_exp *listeExpressions(){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
 
 n_l_exp *listeExpressionsBis(){
@@ -866,4 +934,6 @@ n_l_exp *listeExpressionsBis(){
     else{
         ERREUR();
     }
+
+    return NULL;
 }
