@@ -6,29 +6,12 @@ void setTraceXml(int trace) {
     trace_xml = trace;
 }
 
-/*void setTraceAnalyseur(int trace) {
-    trace_analyseur_lexical = trace;
-}*/
-
 int consume(int x){
-    /*char valeur[10];
-    char valeur2[10];
-    char nom[10];
-    char nom2[10];*/
-    //nom_token(x,nom,valeur);
-
     if(uniteCourante == x){
-    	//char nom[100], valeur[100];
-    
-      //nom_token( uniteCourante, nom, valeur );
-      //printf("%s\t%s\t%s\n", yytext, nom, valeur);
         affiche_feuille(uniteCourante, trace_xml);
         uniteCourante = yylex();
         return 1;
-    }/*else{
-        nom_token(uniteCourante,nom2,valeur2);
-        fprintf(stderr,"%s expected %s found\n", valeur, valeur2);
-    }  */ 
+    }
 
     return 0;
 }
@@ -157,7 +140,6 @@ int optTailleTableau(){
     if(consume(CROCHET_OUVRANT)){
     	char *nombre = malloc(sizeof(char) * strlen(yytext)+1);
 		strcpy(nombre, yytext);
-		printf("NOedbjkefb %d", atoi(nombre));
         if(consume(NOMBRE)){
             if(!consume(CROCHET_FERMANT)){
                 erreur("optTailleTableau");
@@ -788,17 +770,13 @@ n_exp *facteur(){
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(consume(NOMBRE)){
-    
-        //printf("Nombre eee %s\n", nombre);
-       	int i = atoi(nombre);
-   		printf("Nombre eee %s %d\n", nombre, i);
         $$ = cree_n_exp_entier(atoi(nombre));
         balise_fermante(__FUNCTION__);
         return $$;
     }
     else if(est_premier(uniteCourante,_appelFct_)){
         n_appel *$1 = appelFct();
-        n_instr * $$ = cree_n_instr_appel($1);
+        $$ = cree_n_exp_appel($1);
         balise_fermante(__FUNCTION__);
         return $$;
     }else if(est_premier(uniteCourante,_var_)){
@@ -851,7 +829,6 @@ n_exp *optIndice(){
 
     balise_ouvrante(__FUNCTION__);
     if(consume(CROCHET_OUVRANT)){
-    	printf("Variable1 : %s\n", yytext);
         $$ = expression();
         if(!consume(CROCHET_FERMANT)){
             ERREUR();

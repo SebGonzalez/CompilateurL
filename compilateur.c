@@ -1,4 +1,5 @@
 #include "./Analyseur_Syntaxique/analyseur_syntaxique.h"
+#include "./Analyseur_Semantique/analyseur_semantique.h"
 
 int fichier_utilise = 0;
 
@@ -57,5 +58,6 @@ int main(int argc, char **argv) {
 
   if(arbre_abstrait)
       affiche_n_prog(n);
+  parcours_n_prog(n);
   return 0;
 }
