@@ -241,6 +241,9 @@ void parcours_dec(n_dec *n)
 
 void parcours_foncDec(n_dec *n)
 {
+  if(!strcmp(n->nom,"lire") || !strcmp(n->nom,"ecrire")){
+    erreur("Une fonction avec le nom lire ou ecrire ne peut etre declare\n");
+  }
   //Test si une fonction du meme nom n existe pas deja
   int test = rechercheDeclarative(n->nom);
 
@@ -249,17 +252,15 @@ void parcours_foncDec(n_dec *n)
   }
 
   //On ajoute la fonction a la table des symboles
-  ajouteIdentificateur(n->nom, P_VARIABLE_GLOBALE, T_FONCTION, 0, 0);
+  int foncLine = ajouteIdentificateur(n->nom, P_VARIABLE_GLOBALE, T_FONCTION, 0, 0);
 
   entreeFonction();
-  //On recupere le nombre de param
-  int nb_param = parcours_l_dec(n->u.foncDec_.param, 0);
   //On est oblige pour l instant de rechercher la fonction comme si elle etait utilise pour la retrouver
   //dans le scope global depuis le scope local
-  tabsymboles.tab[rechercheExecutable(n->nom)].complement = nb_param;
+  tabsymboles.tab[foncLine].complement = parcours_l_dec(n->u.foncDec_.param, 0);
 
   //Si la fonction main a des arguments
-  if(strcmp(n->nom,"main") == 0 && nb_param != 0){
+  if(strcmp(n->nom,"main") == 0 && tabsymboles.tab[foncLine].complement != 0){
     erreur("La fonction main ne doit pas prendre d arguments\n");
   }
   //On passe en scope local
@@ -336,11 +337,25 @@ void parcours_var_simple(n_var *n)
   if(test == -1){
     erreur("La variable n a pas ete declare\n");
   }
+
+  if(tabsymboles.tab[test].type != T_ENTIER){
+    erreur("Un tableau a peut etre ete utilise sans indice\n");
+  }
 }
 
 /*-------------------------------------------------------------------------*/
 void parcours_var_indicee(n_var *n)
 {
+  int test = rechercheExecutable(n->nom);
+
+  if(test == -1){
+    erreur("La variable n a pas ete declare\n");
+  }
+
+  if(tabsymboles.tab[test].type != T_TABLEAU_ENTIER){
+    erreur("Une variable a peut etre ete utilisee avec un indice\n");
+  }
+
   parcours_exp( n->u.indicee_.indice );
 }
 /*-------------------------------------------------------------------------*/
