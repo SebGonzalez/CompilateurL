@@ -21,9 +21,9 @@ void parcours_dec(n_dec *n);
 void parcours_foncDec(n_dec *n);
 void parcours_varDec(n_dec *n);
 void parcours_tabDec(n_dec *n);
-void parcours_var(n_var *n);
-void parcours_var_simple(n_var *n);
-void parcours_var_indicee(n_var *n);
+void parcours_var(n_var *n, int push);
+void parcours_var_simple(n_var *n, int push);
+void parcours_var_indicee(n_var *n, int push);
 void parcours_appel(n_appel *n);
 
 //int trace_abs = 1; Already defined in affiche_arbre_abstrait
@@ -31,18 +31,38 @@ void parcours_appel(n_appel *n);
 /*-------------------------------------------------------------------------*/
 
 int traceTableSymbole = 0;
+int traceCode = 0;
 
 void setTraceTableSymbole(){
   traceTableSymbole = 1;
+}
+void setTraceCode(){
+  traceCode = 1;
 }
 
 void parcours_n_prog(n_prog *n)
 {
   portee = P_VARIABLE_GLOBALE;
   adresseGlobaleCourante = 0;
-  parcours_l_dec(n->variables, 0);
-  parcours_l_dec(n->fonctions, 0);
 
+  if(traceCode) {
+    printf("%%include 'io.nsm'\n");
+    printf("section .bss\n");
+  }
+
+  parcours_l_dec(n->variables, 0);
+  if(traceCode) {
+    printf("global _start\n");
+    printf("_start\n");
+    printf("call main\n");
+    printf("move eax, 1\n");
+    printf("int 0x80\n");
+    printf("main:\n");
+  }
+  parcours_l_dec(n->fonctions, 0);
+  if(traceCode) {
+    printf("ret\n");
+  }
   if(rechercheExecutable("main") == -1){
     erreur("La fonction main n'a pas ete declaree\n");
   }
@@ -98,8 +118,22 @@ void parcours_instr_tantque(n_instr *n)
 
 void parcours_instr_affect(n_instr *n)
 {
-  parcours_var(n->u.affecte_.var);
+  parcours_var(n->u.affecte_.var, 0);
+  if(traceCode) {
+    if(n->u.affecte_.var->type == indicee) {
+      printf("pop ecx\n");
+    }
+  }
   parcours_exp(n->u.affecte_.exp);
+  if(traceCode) {
+    printf("pop eax\n");
+    if(n->u.affecte_.var->type == indicee) {
+      printf("mov [v%s+ecx*4], eax\n", n->u.affecte_.var->nom); //à faire les tableaux
+    }
+    else {
+      printf("mov [v%s], eax\n", n->u.affecte_.var->nom); //à faire les tableaux
+    }
+  }
 }
 
 /*-------------------------------------------------------------------------*/
@@ -143,6 +177,10 @@ void parcours_instr_retour(n_instr *n)
 void parcours_instr_ecrire(n_instr *n)
 {
   parcours_exp(n->u.ecrire_.expression);
+  if(traceCode) {
+    printf("pop eax\n");
+    printf("call iprintLF\n");
+  }
 }
 
 /*-------------------------------------------------------------------------*/
@@ -173,7 +211,7 @@ void parcours_exp(n_exp *n)
 
 void parcours_varExp(n_exp *n)
 {
-  parcours_var(n->u.var);
+  parcours_var(n->u.var, 1);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -195,20 +233,38 @@ void parcours_opExp(n_exp *n)
   if( n->u.opExp_.op2 != NULL) {
     parcours_exp(n->u.opExp_.op2);
   }
+  if(traceCode) {
+    printf("pop ebx\n");
+    printf("pop eax\n");
+    if(n->u.opExp_.op == plus) printf("add eax, ebx\n");
+    else if(n->u.opExp_.op == moins) printf("sub eax, ebx\n");
+    else if(n->u.opExp_.op == fois) printf("mult ebx\n");
+    else if(n->u.opExp_.op == divise) { printf("mov edx, 0\n"); printf("div ebx\n"); }
+   /* else if(n->u.opExp_.op == egal) parcours_texte("egal", trace_abs);
+    else if(n->u.opExp_.op == inferieur) parcours_texte("inf", trace_abs);
+    else if(n->u.opExp_.op == ou) parcours_texte("ou", trace_abs);
+    else if(n->u.opExp_.op == et) parcours_texte("et", trace_abs);
+    else if(n->u.opExp_.op == non) parcours_texte("non", trace_abs);*/
+    printf("push eax\n");
+  }
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_intExp(n_exp *n)
 {
-  /*char texte[ 50 ];
-  sprintf(texte, "%d", n->u.entier);*/
+  if(traceCode) {
+    printf("push %d\n", n->u.entier);
+  }
 }
 
 /*-------------------------------------------------------------------------*/
 void parcours_lireExp(n_exp *n)
 {
-
+  if(traceCode) {
+    printf("call readline\n");
+    printf("push eax\n");
+  }
 }
 
 /*-------------------------------------------------------------------------*/
@@ -298,6 +354,8 @@ void parcours_varDec(n_dec *n)
     erreur("Une variable locale ne peut avoir le meme nom qu un argument\n");
   }
   if(portee == P_VARIABLE_GLOBALE){
+    if(traceCode)
+      printf("v%s: resd 1\n", n->nom);
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseGlobaleCourante, 1);
     adresseGlobaleCourante += 4;
   }else if(portee == P_ARGUMENT){
@@ -325,22 +383,24 @@ void parcours_tabDec(n_dec *n)
 
   ajouteIdentificateur(n->nom, portee, T_TABLEAU_ENTIER, adresseGlobaleCourante, n->u.tabDec_.taille);
   adresseGlobaleCourante += n->u.tabDec_.taille * 4;
+  if(traceCode)
+      printf("v%s: resd %d\n", n->nom, n->u.tabDec_.taille);
 }
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_var(n_var *n)
+void parcours_var(n_var *n, int push)
 {
   if(n->type == simple) {
-    parcours_var_simple(n);
+    parcours_var_simple(n, push);
   }
   else if(n->type == indicee) {
-    parcours_var_indicee(n);
+    parcours_var_indicee(n, push);
   }
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_simple(n_var *n)
+void parcours_var_simple(n_var *n, int push)
 {
   int test = rechercheExecutable(n->nom);
 
@@ -351,10 +411,13 @@ void parcours_var_simple(n_var *n)
   if(tabsymboles.tab[test].type != T_ENTIER){
     erreur("Un tableau a peut etre ete utilise sans indice\n");
   }
+  if(traceCode && push) {
+    printf("push [v%s]\n", n->nom);
+  }
 }
 
 /*-------------------------------------------------------------------------*/
-void parcours_var_indicee(n_var *n)
+void parcours_var_indicee(n_var *n, int push)
 {
   int test = rechercheExecutable(n->nom);
 
@@ -367,5 +430,9 @@ void parcours_var_indicee(n_var *n)
   }
 
   parcours_exp( n->u.indicee_.indice );
+  if(traceCode && push) {
+    printf("pop eax\n");
+    printf("push [v%s+eax*4]\n", n->nom);
+  }
 }
 /*-------------------------------------------------------------------------*/

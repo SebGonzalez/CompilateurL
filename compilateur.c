@@ -43,6 +43,9 @@ int main(int argc, char **argv) {
     else if(strcmp("-t", argv[i]) == 0){
       setTraceTableSymbole();
     }
+    else if(strcmp("-n", argv[i]) == 0){
+      setTraceCode();
+    }
   }
   initialise_premiers();
   initialise_suivants();

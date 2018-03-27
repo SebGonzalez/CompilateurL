@@ -10,6 +10,7 @@
 
 void parcours_n_prog(n_prog *n);
 void setTraceTableSymbole();
+void setTraceCode();
 
 int adresseGlobaleCourante;
 
