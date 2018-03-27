@@ -38,6 +38,10 @@ int main(int argc, char **argv) {
       trace_xml = 1;
       arbre_abstrait = 1;
        setTraceXml(1);
+       setTraceTableSymbole();
+    }
+    else if(strcmp("-t", argv[i]) == 0){
+      setTraceTableSymbole();
     }
   }
   initialise_premiers();
@@ -58,6 +62,8 @@ int main(int argc, char **argv) {
 
   if(arbre_abstrait)
       affiche_n_prog(n);
+
   parcours_n_prog(n);
+
   return 0;
 }

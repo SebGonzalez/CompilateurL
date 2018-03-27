@@ -30,6 +30,12 @@ void parcours_appel(n_appel *n);
 
 /*-------------------------------------------------------------------------*/
 
+int traceTableSymbole = 0;
+
+void setTraceTableSymbole(){
+  traceTableSymbole = 1;
+}
+
 void parcours_n_prog(n_prog *n)
 {
   portee = P_VARIABLE_GLOBALE;
@@ -273,7 +279,7 @@ void parcours_foncDec(n_dec *n)
   parcours_l_dec(n->u.foncDec_.variables, 0);
   parcours_instr(n->u.foncDec_.corps);
   
-  sortieFonction(1);
+  sortieFonction(traceTableSymbole);
 }
 
 /*-------------------------------------------------------------------------*/

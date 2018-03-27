@@ -9,6 +9,7 @@
 #include "../util/util.h"
 
 void parcours_n_prog(n_prog *n);
+void setTraceTableSymbole();
 
 int adresseGlobaleCourante;
 
