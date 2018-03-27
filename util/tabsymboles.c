@@ -106,7 +106,7 @@ int rechercheExecutable(char *identif)
   */
 int rechercheDeclarative(char *identif) {
   int i;
-  for(i = tabsymboles.base; i < tabsymboles.sommet; i++){
+  for(i = tabsymboles.sommet - 1; i >= tabsymboles.base; i--){
     if(!strcmp(identif, tabsymboles.tab[i].identif))
       return i;
   }
