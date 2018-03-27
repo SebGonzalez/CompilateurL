@@ -36,6 +36,11 @@ void parcours_n_prog(n_prog *n)
   adresseGlobaleCourante = 0;
   parcours_l_dec(n->variables, 0);
   parcours_l_dec(n->fonctions, 0);
+
+  if(rechercheExecutable("main") == -1){
+    erreur("La fonction main n'a pas ete declaree\n");
+  }
+
 }
 
 /*-------------------------------------------------------------------------*/
@@ -267,9 +272,8 @@ void parcours_foncDec(n_dec *n)
   portee = P_VARIABLE_LOCALE;
   parcours_l_dec(n->u.foncDec_.variables, 0);
   parcours_instr(n->u.foncDec_.corps);
-
-  afficheTabsymboles();
-  sortieFonction(0);
+  
+  sortieFonction(1);
 }
 
 /*-------------------------------------------------------------------------*/
