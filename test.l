@@ -1,7 +1,9 @@
-main()
 entier $a, entier $b;
+
+main()
 {
-	si($a & $a<$b) alors
+	$a = 0;
+	tantque($a<$b) faire
 	{
 		ecrire($a);
 	}

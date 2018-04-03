@@ -320,7 +320,6 @@ void parcours_opExp(n_exp *n)
       printf("%s : push 1\n", e1);
       printf("%s : \n", e2);
     }
-    printf("push eax\n");
   }
 }
 
