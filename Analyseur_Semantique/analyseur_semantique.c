@@ -56,10 +56,12 @@ void parcours_n_prog(n_prog *n)
   if(traceCode) {
     printf("%%include 'io.nsm'\n");
     printf("section .bss\n");
+    printf("sinput: resb  255 ;\n");
   }
 
   parcours_l_dec(n->variables, 0);
   if(traceCode) {
+    printf("\nsection .text\n");
     printf("global _start\n");
     printf("_start\n");
     printf("call main\n");
@@ -262,10 +264,10 @@ void parcours_opExp(n_exp *n)
     if(n->u.opExp_.op != non) printf("pop ebx\n");
     printf("pop eax\n");
 
-    if(n->u.opExp_.op == plus) printf("add eax, ebx\n");
-    else if(n->u.opExp_.op == moins) printf("sub eax, ebx\n");
-    else if(n->u.opExp_.op == fois) printf("mult ebx\n");
-    else if(n->u.opExp_.op == divise) { printf("mov edx, 0\n"); printf("div ebx\n"); }
+    if(n->u.opExp_.op == plus) { printf("add eax, ebx\n"); printf("push eax\n"); }
+    else if(n->u.opExp_.op == moins) { printf("sub eax, ebx\n"); printf("push eax\n"); }
+    else if(n->u.opExp_.op == fois) { printf("mult ebx\n"); printf("push eax\n"); }
+    else if(n->u.opExp_.op == divise) { printf("mov edx, 0\n"); printf("div ebx\n"); printf("push eax\n"); }
     else if(n->u.opExp_.op == egal) {
       char *e1 = generer_etiquette();
       char *e2 = generer_etiquette();
@@ -320,7 +322,6 @@ void parcours_opExp(n_exp *n)
       printf("%s : push 1\n", e1);
       printf("%s : \n", e2);
     }
-    printf("push eax\n");
   }
 }
 
