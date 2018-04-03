@@ -312,6 +312,7 @@ void parcours_opExp(n_exp *n)
     }
     else if(n->u.opExp_.op == non) {
       char *e1 = generer_etiquette();
+      char *e2 = generer_etiquette();
       printf("cmp eax 0\n"); 
       printf("je %s\n", e1);
       printf("push 0\n");
