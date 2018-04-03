@@ -40,6 +40,14 @@ void setTraceCode(){
   traceCode = 1;
 }
 
+unsigned long long etiquette = 0;
+char* generer_etiquette() {
+  char *nom_etiquette[21];
+  sprinft(etiquette, "e%llu", etiquette);
+  etiquette++;
+  return nom_etiquette;
+}
+
 void parcours_n_prog(n_prog *n)
 {
   portee = P_VARIABLE_GLOBALE;
@@ -100,18 +108,34 @@ void parcours_instr(n_instr *n)
 void parcours_instr_si(n_instr *n)
 {
   parcours_exp(n->u.si_.test);
+  char *e1 = generer_etiquette();
+  char *e2 = generer_etiquette();
+  printf("pop eax\n");
+  printf("cmp eax, 0\n");
+  printf("je %s\n", e1);
   parcours_instr(n->u.si_.alors);
+  printf("jmp %s\n", e2);
+  printf("%s : \n", e1);
   if(n->u.si_.sinon){
     parcours_instr(n->u.si_.sinon);
   }
+  printf("%s : \n", e2);
 }
 
 /*-------------------------------------------------------------------------*/
 
 void parcours_instr_tantque(n_instr *n)
 {
+  char *e1 = generer_etiquette();
+  char *e2 = generer_etiquette();
+  printf("%s : \n", e1);
   parcours_exp(n->u.tantque_.test);
+  printf("pop eax\n");
+  printf("cmp eax, 0\n");
+  printf("je %s\n", e2);
   parcours_instr(n->u.tantque_.faire);
+  printf("jmp %s\n", e1);
+  printf("%s : \n", e2);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -234,17 +258,67 @@ void parcours_opExp(n_exp *n)
     parcours_exp(n->u.opExp_.op2);
   }
   if(traceCode) {
-    printf("pop ebx\n");
+
+    if(n->u.opExp_.op != non) printf("pop ebx\n");
     printf("pop eax\n");
+
     if(n->u.opExp_.op == plus) printf("add eax, ebx\n");
     else if(n->u.opExp_.op == moins) printf("sub eax, ebx\n");
     else if(n->u.opExp_.op == fois) printf("mult ebx\n");
     else if(n->u.opExp_.op == divise) { printf("mov edx, 0\n"); printf("div ebx\n"); }
-   /* else if(n->u.opExp_.op == egal) parcours_texte("egal", trace_abs);
-    else if(n->u.opExp_.op == inferieur) parcours_texte("inf", trace_abs);
-    else if(n->u.opExp_.op == ou) parcours_texte("ou", trace_abs);
-    else if(n->u.opExp_.op == et) parcours_texte("et", trace_abs);
-    else if(n->u.opExp_.op == non) parcours_texte("non", trace_abs);*/
+    else if(n->u.opExp_.op == egal) {
+      char *e1 = generer_etiquette();
+      char *e2 = generer_etiquette();
+      printf("cmp eax ebx\n");
+      printf("je %s\n", e1);
+      printf("push 0\n");
+      printf("jmp %s\n", e2);
+      printf("%s : push 1\n", e1);
+      printf("%s : \n", e2);
+    }
+    else if(n->u.opExp_.op == inferieur) {
+      char *e1 = generer_etiquette();
+      char *e2 = generer_etiquette();
+      printf("cmp eax ebx\n");
+      printf("jl %s\n", e1);
+      printf("push 0\n");
+      printf("jmp %s\n", e2);
+      printf("%s : push 1\n", e1);
+      printf("%s : \n", e2);
+    }
+    else if(n->u.opExp_.op == ou) {
+      char *e1 = generer_etiquette();
+      char *e2 = generer_etiquette();
+      printf("cmp eax 1\n"); 
+      printf("je %s\n", e1);
+      printf("cmp ebx 1\n");
+      printf("je %s\n", e1);
+      printf("push 0\n");
+      printf("jmp %s\n", e2);
+      printf("%s : push 1\n", e1);
+      printf("%s : \n", e2);
+    }
+    else if(n->u.opExp_.op == et) { 
+      char *e1 = generer_etiquette();
+      char *e2 = generer_etiquette();
+      printf("cmp eax 0\n"); 
+      printf("je %s\n", e1);
+      printf("cmp ebx 0\n");
+      printf("je %s\n", e1);
+      printf("push 1\n");
+      printf("jmp %s\n", e2);
+      printf("%s : push 0\n", e1);
+      printf("%s : \n", e2);
+    }
+    else if(n->u.opExp_.op == non) {
+      char *e1 = generer_etiquette();
+      printf("cmp eax 0\n"); 
+      printf("je %s\n", e1);
+      printf("push 0\n");
+      printf("jmp %s\n", e2);
+      printf("%s : push 1\n", e1);
+      printf("%s : \n", e2);
+    }
     printf("push eax\n");
   }
 }
