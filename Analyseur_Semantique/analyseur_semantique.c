@@ -43,7 +43,7 @@ void setTraceCode(){
 unsigned long long etiquette = 0;
 char* generer_etiquette() {
   char *nom_etiquette[21];
-  sprinft(etiquette, "e%llu", etiquette);
+  sprintf(etiquette, "e%llu", etiquette);
   etiquette++;
   return nom_etiquette;
 }
