@@ -112,16 +112,21 @@ void parcours_instr_si(n_instr *n)
   parcours_exp(n->u.si_.test);
   char *e1 = generer_etiquette();
   char *e2 = generer_etiquette();
-  printf("pop eax\n");
-  printf("cmp eax, 0\n");
-  printf("je %s\n", e1);
+  if(traceCode){
+    printf("pop eax\n");
+    printf("cmp eax, 0\n");
+    printf("je %s\n", e1);
+  }
   parcours_instr(n->u.si_.alors);
-  printf("jmp %s\n", e2);
-  printf("%s : \n", e1);
+  if(traceCode){
+    printf("jmp %s\n", e2);
+    printf("%s : \n", e1);
+  }
   if(n->u.si_.sinon){
     parcours_instr(n->u.si_.sinon);
   }
-  printf("%s : \n", e2);
+  if(traceCode)
+    printf("%s : \n", e2);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -130,14 +135,19 @@ void parcours_instr_tantque(n_instr *n)
 {
   char *e1 = generer_etiquette();
   char *e2 = generer_etiquette();
-  printf("%s : \n", e1);
+  if(traceCode)
+    printf("%s : \n", e1);
   parcours_exp(n->u.tantque_.test);
-  printf("pop eax\n");
-  printf("cmp eax, 0\n");
-  printf("je %s\n", e2);
+  if(traceCode){
+    printf("pop eax\n");
+    printf("cmp eax, 0\n");
+    printf("je %s\n", e2);
+  }
   parcours_instr(n->u.tantque_.faire);
-  printf("jmp %s\n", e1);
-  printf("%s : \n", e2);
+  if(traceCode){
+    printf("jmp %s\n", e1);
+    printf("%s : \n", e2);
+  }
 }
 
 /*-------------------------------------------------------------------------*/
@@ -338,7 +348,9 @@ void parcours_intExp(n_exp *n)
 void parcours_lireExp(n_exp *n)
 {
   if(traceCode) {
+    printf("mov eax, sinput\n");
     printf("call readline\n");
+    printf("call atoi\n");
     printf("push eax\n");
   }
 }
