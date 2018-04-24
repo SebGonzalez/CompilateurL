@@ -30,6 +30,8 @@ void parcours_appel(n_appel *n);
 
 /*-------------------------------------------------------------------------*/
 
+int nbParamFonctionCourante = 0;
+
 int traceTableSymbole = 0;
 int traceCode = 0;
 
@@ -54,7 +56,7 @@ void parcours_n_prog(n_prog *n)
   adresseGlobaleCourante = 0;
 
   if(traceCode) {
-    printf("%%include 'io.nsm'\n");
+    printf("%%include 'io.asm'\n");
     printf("section .bss\n");
     printf("sinput: resb  255 ;\n");
   }
@@ -63,16 +65,14 @@ void parcours_n_prog(n_prog *n)
   if(traceCode) {
     printf("\nsection .text\n");
     printf("global _start\n");
-    printf("_start\n");
+    printf("_start :\n");
     printf("call main\n");
-    printf("move eax, 1\n");
+    printf("mov eax, 1\n");
     printf("int 0x80\n");
-    printf("main:\n");
+   // printf("main:\n");
   }
   parcours_l_dec(n->fonctions, 0);
-  if(traceCode) {
-    printf("ret\n");
-  }
+
   if(rechercheExecutable("main") == -1){
     erreur("La fonction main n'a pas ete declaree\n");
   }
@@ -164,40 +164,50 @@ void parcours_instr_affect(n_instr *n)
   if(traceCode) {
     printf("pop eax\n");
     if(n->u.affecte_.var->type == indicee) {
-      printf("mov [v%s+ecx*4], eax\n", n->u.affecte_.var->nom); //à faire les tableaux
+      printf("mov [v%s+ecx*4], eax ;affectation dans la case d un tableau\n", n->u.affecte_.var->nom); 
     }
     else {
-      printf("mov [v%s], eax\n", n->u.affecte_.var->nom); //à faire les tableaux
+		int test = rechercheExecutable(n->u.affecte_.var->nom);
+		if(tabsymboles.tab[test].portee == P_VARIABLE_GLOBALE)
+     		printf("mov [v%s], eax ;affectatation dans une variable globale\n", n->u.affecte_.var->nom);
+		else if(tabsymboles.tab[test].portee == P_VARIABLE_LOCALE) {
+			printf("mov [ebp-4-%d], eax ;affectation dans une variable locale\n", tabsymboles.tab[test].adresse);
+		}
+		else {
+			printf("mov [ebp+8+4*%d], eax ;afffectation dans un parametre local\n", nbParamFonctionCourante);
+		}
     }
   }
 }
 
 /*-------------------------------------------------------------------------*/
 
-void parcours_instr_appel(n_instr *n)
-{
-  parcours_appel(n->u.appel);
+void parcours_instr_appel(n_instr *n) {
+	parcours_appel(n->u.appel);
+
 }
 /*-------------------------------------------------------------------------*/
 
 void parcours_appel(n_appel *n)
 {
-  /*char *fct = "appel";
-  parcours_balise_ouvrante(fct, trace_abs);
-  parcours_texte( n->fonction, trace_abs);
-  parcours_l_exp(n->args);
-  parcours_balise_fermante(fct, trace_abs);*/
+	if(traceCode)
+		printf("sub esp, 4 ;allocation valeur de retour\n"); //allocation valeur de retour
 
-  int test = rechercheExecutable(n->fonction);
+	int test = rechercheExecutable(n->fonction);
 
-  if(test == -1){
+	if(test == -1){
     erreur("Cette fonction n a pas ete declaree\n");
-  }
-  int nb_exp = parcours_l_exp(n->args, 0);
+	 }
+  	int nb_exp = parcours_l_exp(n->args, 0);
 
-  if(tabsymboles.tab[test].complement != nb_exp){
-    erreur("L appel de fonction ne comporte pas le meme nombre de parametre que la declaration\n");
-  }
+  	if(tabsymboles.tab[test].complement != nb_exp){
+    	erreur("L appel de fonction ne comporte pas le meme nombre de parametre que la declaration\n");
+  	}
+
+	if(traceCode) {
+		printf("call %s\n", n->fonction);
+		printf("add esp, 4*%d; desallocation des arguments\n", nb_exp); //desallocation variable locale
+	}
 
 }
 
@@ -206,6 +216,7 @@ void parcours_appel(n_appel *n)
 void parcours_instr_retour(n_instr *n)
 {
   parcours_exp(n->u.retour_.expression);
+	printf("pop dword[ebp + 8 + 4*%d]\n", nbParamFonctionCourante);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -359,7 +370,7 @@ void parcours_lireExp(n_exp *n)
 
 void parcours_appelExp(n_exp *n)
 {
-  parcours_appel(n->u.appel);
+	parcours_appel(n->u.appel);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -378,7 +389,6 @@ int parcours_l_dec(n_l_dec *n, int nb_arg)
 
 void parcours_dec(n_dec *n)
 {
-
   if(n){
     if(n->type == foncDec) {
       parcours_foncDec(n);
@@ -405,7 +415,12 @@ void parcours_foncDec(n_dec *n)
   if(test != -1){
     erreur("Une fonction du meme nom existe deja\n");
   }
-
+	
+	if(traceCode) {
+		printf("%s :\n", n->nom);
+		printf("push ebp\n");
+		printf("mov ebp, esp\n");
+	}
   //On ajoute la fonction a la table des symboles
   int foncLine = ajouteIdentificateur(n->nom, P_VARIABLE_GLOBALE, T_FONCTION, 0, 0);
 
@@ -413,7 +428,7 @@ void parcours_foncDec(n_dec *n)
   //On est oblige pour l instant de rechercher la fonction comme si elle etait utilise pour la retrouver
   //dans le scope global depuis le scope local
   tabsymboles.tab[foncLine].complement = parcours_l_dec(n->u.foncDec_.param, 0);
-
+	nbParamFonctionCourante = tabsymboles.tab[foncLine].complement;
   //Si la fonction main a des arguments
   if(strcmp(n->nom,"main") == 0 && tabsymboles.tab[foncLine].complement != 0){
     erreur("La fonction main ne doit pas prendre d arguments\n");
@@ -423,6 +438,12 @@ void parcours_foncDec(n_dec *n)
   parcours_l_dec(n->u.foncDec_.variables, 0);
   parcours_instr(n->u.foncDec_.corps);
   
+	if(traceCode) {
+		printf("mov esp, ebp ;effacer variable locale\n");
+		printf("pop ebp ;retablir ancienne valeur ebp\n");
+		printf("ret\n");
+	}
+
   sortieFonction(traceTableSymbole);
 }
 
@@ -452,6 +473,9 @@ void parcours_varDec(n_dec *n)
   }else{
     ajouteIdentificateur(n->nom, portee, T_ENTIER, adresseLocaleCourante, 1);
     adresseLocaleCourante += 4;
+	if(traceCode) {
+		printf("sub esp, 4 ; allocation variable locale\n");
+	}
   }
 }
 
@@ -500,7 +524,12 @@ void parcours_var_simple(n_var *n, int push)
     erreur("Un tableau a peut etre ete utilise sans indice\n");
   }
   if(traceCode && push) {
-    printf("push [v%s]\n", n->nom);
+	if(tabsymboles.tab[test].portee == P_VARIABLE_GLOBALE)
+    	printf("push dword[v%s]\n", n->nom);
+	else if(tabsymboles.tab[test].portee == P_VARIABLE_LOCALE)
+		printf("push dword[ebp-4-%d]\n", tabsymboles.tab[test].adresse);
+	else
+		printf("push dword[ebp + 4 + 4*%d - %d]\n", nbParamFonctionCourante, tabsymboles.tab[test].adresse);
   }
 }
 
@@ -520,7 +549,7 @@ void parcours_var_indicee(n_var *n, int push)
   parcours_exp( n->u.indicee_.indice );
   if(traceCode && push) {
     printf("pop eax\n");
-    printf("push [v%s+eax*4]\n", n->nom);
+    printf("push dword[v%s+eax*4]\n", n->nom);
   }
 }
 /*-------------------------------------------------------------------------*/
